@@ -41,8 +41,7 @@ python3 -m venv venv312; source venv312/bin/activate
 
 learning @LAPTOP-O7E2D0MF:/mnt/c/WINDOWS/system32$ source venv312/bin/activate
 (venv312) learning@LAPTOP-O7E2D0MF:/mnt/c/WINDOWS/system32$
-Confirm keras is installed correctly as below:
-python3 -m pip show keras
+Confirm keras is installed correctly "python3 -m pip show keras"
 
 3. Running a sample program
 Try Simple MNIST convnet [https://keras.io/examples/vision/mnist_convnet/], python module can be downloaded from: 
@@ -58,12 +57,12 @@ First “Hello World” program can be created based on this Image classificatio
 
 First download data set as follows
 curl -O https://download.microsoft.com/download/3/E/1/3E1C3F21-ECDB-4869-8368-6DEBA77B919F/kagglecatsanddogs_5340.zip
-Then unzip and confirm
-unzip -q kagglecatsanddogs_5340.zip
-ls
+Then unzip and confirm "unzip -q kagglecatsanddogs_5340.zip && ls"
 
-Then run the helloworld.py which is here Editing deeplearning-101/README.md at main · AungKyawSoe-Tech/deeplearning-101
+Then run the helloworld.py which is here 
 
+AungKyawSoe-Tech/deeplearning-101
+https://github.com/AungKyawSoe-Tech/deeplearning-101/
 
 Run the program as 
 python3 helloworld.py
