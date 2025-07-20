@@ -69,13 +69,8 @@ for images, _ in train_ds.take(1):
         plt.imshow(np.array(augmented_images[0]).astype("uint8"))
         plt.axis("off")    
 
-IM_WIDTH=224
-IM_HEIGHT=224
-inputs = keras.Input(shape=(batch_size, IM_WIDTH, IM_HEIGHT))
-x = data_augmentation(inputs)
-x = layers.Rescaling(1./255)(x)
-          
-          
+
+                    
 # Apply `data_augmentation` to the training images.
 train_ds = train_ds.map(
     lambda img, label: (data_augmentation(img), label),
@@ -88,10 +83,18 @@ val_ds = val_ds.prefetch(tf_data.AUTOTUNE)
 
 
 def make_model(input_shape, num_classes):
+
+    #IM_WIDTH=224
+    #IM_HEIGHT=224
+    #inputs = keras.Input(shape=(batch_size, IM_WIDTH, IM_HEIGHT))
+
+    #Preprocess data by making it part of the model
     inputs = keras.Input(shape=input_shape)
+    x = data_augmentation(inputs)
+    x = layers.Rescaling(1.0/255)(x)
 
     # Entry block
-    x = layers.Rescaling(1.0 / 255)(inputs)
+    #x = layers.Rescaling(1.0 / 255)(inputs)
     x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
     x = layers.BatchNormalization()(x)
     x = layers.Activation("relu")(x)
