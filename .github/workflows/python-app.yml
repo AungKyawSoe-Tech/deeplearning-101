@@ -42,9 +42,5 @@ jobs:
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
-
-    - name: Install dependencies (optional)
-            run: pip install -r requirements.txt # Install packages from requirements.txt if needed
-
     - name: Run Python script
             run: python helloworld.py # Execute your Python script
