@@ -46,5 +46,11 @@ jobs:
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
+    - name: download files
+      run: |
+        curl -O https://download.microsoft.com/download/3/E/1/3E1C3F21-ECDB-4869-8368-6DEBA77B919F/kagglecatsanddogs_5340.zip
+        unzip -q kagglecatsanddogs_5340.zip
+
     - name: Run Python script
-      run: python3 helloworld.py # Execute your Python script
+      run: |
+        python3 helloworld.py # Execute your Python script
