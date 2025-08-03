@@ -69,7 +69,6 @@ def data_augmentation(images):
     return images
 
 
-
 # Visualize augmented samples
 plt.figure(figsize=(10, 10))
 for images, _ in train_ds.take(1):
@@ -88,6 +87,7 @@ train_ds = train_ds.map(
 
 train_ds = train_ds.prefetch(tf.data.AUTOTUNE)
 val_ds = val_ds.prefetch(tf.data.AUTOTUNE)
+
 
 # Build model
 def make_model(input_shape, num_classes):
@@ -126,6 +126,7 @@ def make_model(input_shape, num_classes):
     outputs = layers.Dense(units, activation=None)(x)
 
     return keras.Model(inputs, outputs)
+
 
 model = make_model(input_shape=image_size + (3,), num_classes=2)
 keras.utils.plot_model(model, show_shapes=True)
