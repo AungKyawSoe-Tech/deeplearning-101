@@ -62,10 +62,13 @@ data_augmentation_layers = [
     layers.RandomRotation(0.1),
 ]
 
+
 def data_augmentation(images):
     for layer in data_augmentation_layers:
         images = layer(images)
     return images
+
+
 
 # Visualize augmented samples
 plt.figure(figsize=(10, 10))
@@ -75,6 +78,7 @@ for images, _ in train_ds.take(1):
         ax = plt.subplot(3, 3, i + 1)
         plt.imshow(np.array(augmented_images[i]).astype("uint8"))
         plt.axis("off")
+
 
 # Apply augmentation to training set
 train_ds = train_ds.map(
@@ -125,6 +129,7 @@ def make_model(input_shape, num_classes):
 
 model = make_model(input_shape=image_size + (3,), num_classes=2)
 keras.utils.plot_model(model, show_shapes=True)
+
 
 # Train model
 epochs = 25
