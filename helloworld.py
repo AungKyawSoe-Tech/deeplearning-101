@@ -7,6 +7,51 @@ from keras import layers
 import tensorflow as tf
 import matplotlib.pyplot as plt
 
+
+def data_augmentation(images):
+    for layer in data_augmentation_layers:
+        images = layer(images)
+    return images
+
+# Build model
+def make_model(input_shape, num_classes):
+    inputs = keras.Input(shape=input_shape)
+    x = data_augmentation(inputs)
+    x = layers.Rescaling(1.0 / 255)(x)
+
+    x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Activation("relu")(x)
+
+    previous_block_activation = x
+
+    for size in [256, 512, 728]:
+        x = layers.Activation("relu")(x)
+        x = layers.SeparableConv2D(size, 3, padding="same")(x)
+        x = layers.BatchNormalization()(x)
+
+        x = layers.Activation("relu")(x)
+        x = layers.SeparableConv2D(size, 3, padding="same")(x)
+        x = layers.BatchNormalization()(x)
+
+        x = layers.MaxPooling2D(3, strides=2, padding="same")(x)
+
+        residual = layers.Conv2D(size, 1, strides=2, padding="same")(previous_block_activation)
+        x = layers.add([x, residual])
+        previous_block_activation = x
+
+    x = layers.SeparableConv2D(1024, 3, padding="same")(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Activation("relu")(x)
+
+    x = layers.GlobalAveragePooling2D()(x)
+    x = layers.Dropout(0.25)(x)
+    units = 1 if num_classes == 2 else num_classes
+    outputs = layers.Dense(units, activation=None)(x)
+
+    return keras.Model(inputs, outputs)
+
+
 # Data cleanup
 num_skipped = 0
 for folder_name in ("Cat", "Dog"):
@@ -63,12 +108,6 @@ data_augmentation_layers = [
 ]
 
 
-def data_augmentation(images):
-    for layer in data_augmentation_layers:
-        images = layer(images)
-    return images
-
-
 # Visualize augmented samples
 plt.figure(figsize=(10, 10))
 for images, _ in train_ds.take(1):
@@ -89,45 +128,8 @@ train_ds = train_ds.prefetch(tf.data.AUTOTUNE)
 val_ds = val_ds.prefetch(tf.data.AUTOTUNE)
 
 
-# Build model
-def make_model(input_shape, num_classes):
-    inputs = keras.Input(shape=input_shape)
-    x = data_augmentation(inputs)
-    x = layers.Rescaling(1.0 / 255)(x)
 
-    x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Activation("relu")(x)
-
-    previous_block_activation = x
-
-    for size in [256, 512, 728]:
-        x = layers.Activation("relu")(x)
-        x = layers.SeparableConv2D(size, 3, padding="same")(x)
-        x = layers.BatchNormalization()(x)
-
-        x = layers.Activation("relu")(x)
-        x = layers.SeparableConv2D(size, 3, padding="same")(x)
-        x = layers.BatchNormalization()(x)
-
-        x = layers.MaxPooling2D(3, strides=2, padding="same")(x)
-
-        residual = layers.Conv2D(size, 1, strides=2, padding="same")(previous_block_activation)
-        x = layers.add([x, residual])
-        previous_block_activation = x
-
-    x = layers.SeparableConv2D(1024, 3, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Activation("relu")(x)
-
-    x = layers.GlobalAveragePooling2D()(x)
-    x = layers.Dropout(0.25)(x)
-    units = 1 if num_classes == 2 else num_classes
-    outputs = layers.Dense(units, activation=None)(x)
-
-    return keras.Model(inputs, outputs)
-
-
+# Make model
 model = make_model(input_shape=image_size + (3,), num_classes=2)
 keras.utils.plot_model(model, show_shapes=True)
 

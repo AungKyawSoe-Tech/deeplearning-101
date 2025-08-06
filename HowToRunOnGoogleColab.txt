@@ -1,0 +1,31 @@
+To run a deep learning model from the AungKyawSoe-Tech/deeplearning-101 repository on Google Colab, follow these steps:
+
+
+Open Google Colab
+Visit Google Colab and start a new notebook.
+https://colab.research.google.com/drive/1XT8P5KLwlLsisdEglxHOSQbip_Ld2l1D#scrollTo=O6okFz34InQF
+
+
+Run following commands
+
+!git clone https://github.com/AungKyawSoe-Tech/deeplearning-101.git
+%cd deeplearning-101
+
+!sudo apt-get update
+!sudo apt install curl 
+!sudo apt install unzip 
+!sudo apt install gedit 
+!sudo apt install python3-pip 
+!sudo apt install python3-full 
+!sudo apt install graphviz 
+!python -m pip install --upgrade pip
+!pip install flake8 pytest
+!pip3 install matplotlib 
+!pip3 install pydot 
+!python3 -m pip install tensorflow 
+!python3 -m pip install keras
+
+!curl -O https://download.microsoft.com/download/3/E/1/3E1C3F21-ECDB-4869-8368-6DEBA77B919F/kagglecatsanddogs_5340.zip
+!unzip -q kagglecatsanddogs_5340.zip
+
+!python3 helloworld.py
