@@ -6,7 +6,9 @@ import keras
 from keras import layers
 import tensorflow as tf
 import matplotlib.pyplot as plt
+from silence_tensorflow import silence_tensorflow
 
+silence_tensorflow()
 
 def data_augmentation(images):
     for layer in data_augmentation_layers:
