@@ -9,7 +9,7 @@ https://colab.research.google.com/drive/1XT8P5KLwlLsisdEglxHOSQbip_Ld2l1D#scroll
 Run following commands
 
 !git clone https://github.com/AungKyawSoe-Tech/deeplearning-101.git
-%cd deeplearning-101
+!cd deeplearning-101
 
 !sudo apt-get update
 !sudo apt install curl 
@@ -24,6 +24,7 @@ Run following commands
 !pip3 install pydot 
 !python3 -m pip install tensorflow 
 !python3 -m pip install keras
+!python3 -m pip install silence-tensorflow
 
 !curl -O https://download.microsoft.com/download/3/E/1/3E1C3F21-ECDB-4869-8368-6DEBA77B919F/kagglecatsanddogs_5340.zip
 !unzip -q kagglecatsanddogs_5340.zip
