@@ -72,7 +72,7 @@ print(f"Deleted {num_skipped} images.")
 
 # Generate Datasets
 image_size = (180, 180)
-batch_size = 128
+batch_size = 16
 
 train_ds = keras.utils.image_dataset_from_directory(
     "PetImages",
