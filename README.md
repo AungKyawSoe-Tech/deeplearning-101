@@ -30,19 +30,13 @@ Confirm keras library is installed correctly as partt of Python 3 by following c
 
 python3 -m pip show keras
 
-## 3. Running a sample program
-Try Simple MNIST convnet [https://keras.io/examples/vision/mnist_convnet/], python module can be downloaded from: 
-https://github.com/keras-team/keras-io/blob/master/examples/vision/mnist_convnet.py
-The same of running it can bee seen below:
-python3 mnist_convnet.py
-
-
-## 4. Downloading data set
+## 3. Downloading data set
 
 First download data set as follows
 curl -O https://download.microsoft.com/download/3/E/1/3E1C3F21-ECDB-4869-8368-6DEBA77B919F/kagglecatsanddogs_5340.zip
 Then unzip and confirm "unzip -q kagglecatsanddogs_5340.zip && ls"
 
+## 4. Running the Helloworld script which will train the model using the data set
 Then run the helloworld.py which is here 
 
 AungKyawSoe-Tech/deeplearning-101
@@ -53,7 +47,8 @@ python3 helloworld.py
 
 
 ## 5. References
-   
+
+https://keras.io/examples/vision/mnist_convnet/
 https://www.kaggle.com/datasets/hojjatk/mnist-dataset?resource=download
 https://datasets.activeloop.ai/docs/ml/datasets/mnist/
 https://codeburst.io/how-to-install-the-python-environment-for-ai-and-machine-learning-on-wsl2-612240cb8c0c
