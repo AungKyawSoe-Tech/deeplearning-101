@@ -36,11 +36,13 @@ First download data set as follows
 curl -O https://download.microsoft.com/download/3/E/1/3E1C3F21-ECDB-4869-8368-6DEBA77B919F/kagglecatsanddogs_5340.zip
 Then unzip and confirm "unzip -q kagglecatsanddogs_5340.zip && ls"
 
+### Working across Windows and Linux file systems
+[How to see folders in WSL from Windows] (https://learn.microsoft.com/en-us/windows/wsl/filesystems)
+
 ## 4. Running the Helloworld script which will train the model using the data set
 Then run the helloworld.py which is here 
 
-AungKyawSoe-Tech/deeplearning-101
-https://github.com/AungKyawSoe-Tech/deeplearning-101/
+[AungKyawSoe-Tech/deeplearning-101] https://github.com/AungKyawSoe-Tech/deeplearning-101/
 
 Run the program as 
 python3 helloworld.py
