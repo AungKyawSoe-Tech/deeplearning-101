@@ -23,6 +23,20 @@ sudo apt install python3-full
 sudo apt install graphviz
 pip3 install matplotlib
 pip3 install pydot
+
+Setting and sourcing virtual environment can be done as follows:
+learning@LAPTOP-O7E2D0MF:/mnt/c/WINDOWS/system32$ python3 --version
+Python 3.12.3
+sudo apt install python3.12-venv
+python3 -m venv venv312; source venv312/bin/activate
+learning @LAPTOP-O7E2D0MF:/mnt/c/WINDOWS/system32$ source venv312/bin/activate
+(venv312) learning@LAPTOP-O7E2D0MF:/mnt/c/WINDOWS/system32$
+
+python3 -m pip install tensorflow
+python3 -m pip install keras
+
+
+
 python3 -m pip install tensorflow
 python3 -m pip install keras
 
