@@ -153,6 +153,12 @@ model.fit(
     validation_data=val_ds,
 )
 
+# Save the weights of the trained model
+
+filepath = 'saved_weights.h5'
+model.save_weights(filepath)
+
+
 # Predict
 img = keras.utils.load_img("PetImages/Cat/6779.jpg", target_size=image_size)
 plt.imshow(img)
@@ -163,3 +169,23 @@ img_array = tf.expand_dims(img_array, 0)
 predictions = model.predict(img_array)
 score = float(tf.sigmoid(predictions[0][0]))
 print(f"This image is {100 * (1 - score):.2f}% cat and {100 * score:.2f}% dog.")
+
+img = keras.utils.load_img("TestImages/image1.jpg", target_size=image_size)
+plt.imshow(img)
+
+img_array = keras.utils.img_to_array(img)
+img_array = tf.expand_dims(img_array, 0)
+
+predictions = model.predict(img_array)
+score = float(tf.sigmoid(predictions[0][0]))
+print(f"This image1.jpog is {100 * (1 - score):.2f}% cat and {100 * score:.2f}% dog.")
+
+img = keras.utils.load_img("TestImages/image4.jpg", target_size=image_size)
+plt.imshow(img)
+
+img_array = keras.utils.img_to_array(img)
+img_array = tf.expand_dims(img_array, 0)
+
+predictions = model.predict(img_array)
+score = float(tf.sigmoid(predictions[0][0]))
+print(f"This image4.jpg is {100 * (1 - score):.2f}% cat and {100 * score:.2f}% dog.")
