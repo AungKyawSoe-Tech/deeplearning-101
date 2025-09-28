@@ -53,7 +53,7 @@ image_size = (180, 180)
 
 model = make_model(input_shape=image_size + (3,), num_classes=2)
 
-filepath = 'saved_weights.h5'
+filepath = 'saved.weights.h5'
 model.load_weights(filepath)
 
 

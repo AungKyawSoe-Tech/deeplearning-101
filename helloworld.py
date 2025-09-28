@@ -155,7 +155,7 @@ model.fit(
 
 # Save the weights of the trained model
 
-filepath = 'saved_weights.h5'
+filepath = 'saved.weights.h5'
 model.save_weights(filepath)
 
 
