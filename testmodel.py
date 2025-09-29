@@ -10,6 +10,17 @@ from silence_tensorflow import silence_tensorflow
 
 silence_tensorflow()
 
+# Augment image data
+data_augmentation_layers = [
+    layers.RandomFlip("horizontal"),
+    layers.RandomRotation(0.1),
+]
+
+def data_augmentation(images):
+    for layer in data_augmentation_layers:
+        images = layer(images)
+    return images
+
 # Build model
 def make_model(input_shape, num_classes):
     inputs = keras.Input(shape=input_shape)
@@ -65,7 +76,27 @@ img_array = tf.expand_dims(img_array, 0)
 
 predictions = model.predict(img_array)
 score = float(tf.sigmoid(predictions[0][0]))
-print(f"This image is {100 * (1 - score):.2f}% cat and {100 * score:.2f}% dog.")
+print(f"This image #1 is {100 * (1 - score):.2f}% cat and {100 * score:.2f}% dog.")
+
+img = keras.utils.load_img("TestImages/image2.jpg", target_size=image_size)
+plt.imshow(img)
+
+img_array = keras.utils.img_to_array(img)
+img_array = tf.expand_dims(img_array, 0)
+
+predictions = model.predict(img_array)
+score = float(tf.sigmoid(predictions[0][0]))
+print(f"This image #2 is {100 * (1 - score):.2f}% cat and {100 * score:.2f}% dog.")
+
+img = keras.utils.load_img("TestImages/image3.jpg", target_size=image_size)
+plt.imshow(img)
+
+img_array = keras.utils.img_to_array(img)
+img_array = tf.expand_dims(img_array, 0)
+
+predictions = model.predict(img_array)
+score = float(tf.sigmoid(predictions[0][0]))
+print(f"This image #3 is {100 * (1 - score):.2f}% cat and {100 * score:.2f}% dog.")
 
 img = keras.utils.load_img("TestImages/image4.jpg", target_size=image_size)
 plt.imshow(img)
@@ -75,7 +106,7 @@ img_array = tf.expand_dims(img_array, 0)
 
 predictions = model.predict(img_array)
 score = float(tf.sigmoid(predictions[0][0]))
-print(f"This image is {100 * (1 - score):.2f}% cat and {100 * score:.2f}% dog.")
+print(f"This image #4 is {100 * (1 - score):.2f}% cat and {100 * score:.2f}% dog.")
 
 
 
