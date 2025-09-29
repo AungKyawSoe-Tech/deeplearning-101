@@ -1,5 +1,3 @@
-# Adapted from https://keras.io/examples/vision/image_classification_from_scratch/
-
 import os
 import numpy as np
 import keras
@@ -56,8 +54,8 @@ def make_model(input_shape, num_classes):
 
 # Data cleanup
 num_skipped = 0
-for folder_name in ("Cat", "Dog"):
-    folder_path = os.path.join("PetImages", folder_name)
+for folder_name in ("Cat", "Dog", "Snake", "Fish", "Bird", "Human"):
+    folder_path = os.path.join("TrainingSet", folder_name)
     for fname in os.listdir(folder_path):
         fpath = os.path.join(folder_path, fname)
         try:
@@ -77,7 +75,7 @@ image_size = (180, 180)
 batch_size = 16
 
 train_ds = keras.utils.image_dataset_from_directory(
-    "PetImages",
+    "TrainingSet",
     validation_split=0.2,
     subset="training",
     seed=1337,
@@ -86,7 +84,7 @@ train_ds = keras.utils.image_dataset_from_directory(
 )
 
 val_ds = keras.utils.image_dataset_from_directory(
-    "PetImages",
+    "TrainingSet",
     validation_split=0.2,
     subset="validation",
     seed=1337,
@@ -130,7 +128,6 @@ train_ds = train_ds.prefetch(tf.data.AUTOTUNE)
 val_ds = val_ds.prefetch(tf.data.AUTOTUNE)
 
 
-
 # Make model
 model = make_model(input_shape=image_size + (3,), num_classes=2)
 keras.utils.plot_model(model, show_shapes=True)
@@ -158,34 +155,5 @@ model.fit(
 filepath = 'saved.weights.h5'
 model.save_weights(filepath)
 
-
 # Predict
-img = keras.utils.load_img("PetImages/Cat/6779.jpg", target_size=image_size)
-plt.imshow(img)
-
-img_array = keras.utils.img_to_array(img)
-img_array = tf.expand_dims(img_array, 0)
-
-predictions = model.predict(img_array)
-score = float(tf.sigmoid(predictions[0][0]))
-print(f"This image is {100 * (1 - score):.2f}% cat and {100 * score:.2f}% dog.")
-
-img = keras.utils.load_img("TestImages/image1.jpg", target_size=image_size)
-plt.imshow(img)
-
-img_array = keras.utils.img_to_array(img)
-img_array = tf.expand_dims(img_array, 0)
-
-predictions = model.predict(img_array)
-score = float(tf.sigmoid(predictions[0][0]))
-print(f"This image1.jpog is {100 * (1 - score):.2f}% cat and {100 * score:.2f}% dog.")
-
-img = keras.utils.load_img("TestImages/image4.jpg", target_size=image_size)
-plt.imshow(img)
-
-img_array = keras.utils.img_to_array(img)
-img_array = tf.expand_dims(img_array, 0)
-
-predictions = model.predict(img_array)
-score = float(tf.sigmoid(predictions[0][0]))
-print(f"This image4.jpg is {100 * (1 - score):.2f}% cat and {100 * score:.2f}% dog.")
+# testmodel.py 
