@@ -3,56 +3,61 @@
 
 import os
 import numpy as np
-import keras
-from keras import layers
 import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
 import matplotlib.pyplot as plt
 from silence_tensorflow import silence_tensorflow
 
 silence_tensorflow()
+
+print(f"TensorFlow version: {tf.__version__}")
+print(f"Keras version: {keras.__version__}")
+
+# Clear any previous models/sessions
+tf.keras.backend.clear_session()
 
 def data_augmentation(images):
     for layer in data_augmentation_layers:
         images = layer(images)
     return images
 
-# Build model
+# Build model - Simplified for 3-class classification
 def make_model(input_shape, num_classes):
-    inputs = keras.Input(shape=input_shape)
-    x = data_augmentation(inputs)
-    x = layers.Rescaling(1.0 / 255)(x)
-
-    x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Activation("relu")(x)
-
-    previous_block_activation = x
-
-    for size in [256, 512, 728]:
-        x = layers.Activation("relu")(x)
-        x = layers.SeparableConv2D(size, 3, padding="same")(x)
-        x = layers.BatchNormalization()(x)
-
-        x = layers.Activation("relu")(x)
-        x = layers.SeparableConv2D(size, 3, padding="same")(x)
-        x = layers.BatchNormalization()(x)
-
-        x = layers.MaxPooling2D(3, strides=2, padding="same")(x)
-
-        residual = layers.Conv2D(size, 1, strides=2, padding="same")(previous_block_activation)
-        x = layers.add([x, residual])
-        previous_block_activation = x
-
-    x = layers.SeparableConv2D(1024, 3, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Activation("relu")(x)
-
-    x = layers.GlobalAveragePooling2D()(x)
-    x = layers.Dropout(0.25)(x)
-    # For multi-class classification, we always need num_classes output units
-    outputs = layers.Dense(num_classes, activation=None)(x)
-
-    return keras.Model(inputs, outputs)
+    print(f"Creating model with input_shape={input_shape}, num_classes={num_classes}")
+    
+    model = keras.Sequential([
+        keras.layers.Input(shape=input_shape),
+        keras.layers.Rescaling(1.0 / 255),
+        
+        # First block
+        keras.layers.Conv2D(32, 3, activation='relu', padding='same'),
+        keras.layers.BatchNormalization(),
+        keras.layers.MaxPooling2D(2),
+        
+        # Second block  
+        keras.layers.Conv2D(64, 3, activation='relu', padding='same'),
+        keras.layers.BatchNormalization(),
+        keras.layers.MaxPooling2D(2),
+        
+        # Third block
+        keras.layers.Conv2D(128, 3, activation='relu', padding='same'),
+        keras.layers.BatchNormalization(),
+        keras.layers.MaxPooling2D(2),
+        
+        # Fourth block
+        keras.layers.Conv2D(256, 3, activation='relu', padding='same'),
+        keras.layers.BatchNormalization(),
+        keras.layers.GlobalAveragePooling2D(),
+        
+        # Classifier
+        keras.layers.Dropout(0.25),
+        keras.layers.Dense(num_classes)  # No activation - we'll use from_logits=True
+    ], name="3class_classifier")
+    
+    print(f"Model created successfully")
+    print(f"Model output shape: {model.output_shape}")
+    return model
 
 
 # Data cleanup - Modified for 3-class classification
@@ -143,26 +148,94 @@ val_ds = val_ds.prefetch(tf.data.AUTOTUNE)
 
 # Make model - Now with 3 classes
 num_classes = 3
+
+# Debug: Check data shapes and classes first
+print("\n" + "="*50)
+print("DEBUGGING DATA")
+print("="*50)
+for images, labels in train_ds.take(1):
+    print(f"Image batch shape: {images.shape}")
+    print(f"Label batch shape: {labels.shape}")
+    print(f"Label dtype: {labels.dtype}")
+    print(f"Sample labels: {labels[:5].numpy()}")
+    print(f"Unique labels in batch: {np.unique(labels.numpy())}")
+    print(f"Min label: {np.min(labels.numpy())}, Max label: {np.max(labels.numpy())}")
+    break
+
+print(f"Dataset class names: {train_ds.class_names}")
+print(f"Number of classes expected: {len(train_ds.class_names)}")
+
+# Create the model
+print("\n" + "="*50)
+print("CREATING MODEL")
+print("="*50)
 model = make_model(input_shape=image_size + (3,), num_classes=num_classes)
-keras.utils.plot_model(model, show_shapes=True)
 
-
-# Train model - Modified for multi-class classification
-epochs = 25
-callbacks = [keras.callbacks.ModelCheckpoint("save_at_{epoch}_3class.keras")]
+# Compile model for 3-class classification
+print("\n" + "="*50)
+print("COMPILING MODEL")
+print("="*50)
 
 model.compile(
     optimizer=keras.optimizers.Adam(3e-4),
-    loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),  # Changed from BinaryCrossentropy
-    metrics=[keras.metrics.SparseCategoricalAccuracy(name="acc")],  # Changed from BinaryAccuracy
+    loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+    metrics=[keras.metrics.SparseCategoricalAccuracy(name="acc")],
 )
 
-model.fit(
-    train_ds,
-    epochs=epochs,
-    callbacks=callbacks,
-    validation_data=val_ds,
-)
+print("Model compiled successfully!")
+model.summary()
+
+# Test a single prediction to make sure everything works
+print("\n" + "="*50)
+print("TESTING MODEL")
+print("="*50)
+for images, labels in train_ds.take(1):
+    print("Testing model prediction...")
+    test_pred = model.predict(images[:1], verbose=0)
+    print(f"Prediction shape: {test_pred.shape}")
+    print(f"Prediction values: {test_pred[0]}")
+    
+    # Apply softmax to see probabilities
+    probs = tf.nn.softmax(test_pred[0])
+    print(f"Probabilities: {probs.numpy()}")
+    print(f"Predicted class: {np.argmax(probs)}")
+    print(f"Actual label: {labels[0].numpy()}")
+    break
+
+# Training configuration
+epochs = 25
+callbacks = [keras.callbacks.ModelCheckpoint("save_at_{epoch}_3class.keras")]
+
+print("\n" + "="*50)
+print("STARTING TRAINING")
+print("="*50)
+
+try:
+    model.fit(
+        train_ds,
+        epochs=epochs,
+        callbacks=callbacks,
+        validation_data=val_ds,
+    )
+    print("Training completed successfully!")
+except Exception as e:
+    print(f"Training failed with error: {e}")
+    import traceback
+    traceback.print_exc()
+    
+    # Try with a smaller subset to debug
+    print("\nTrying with a small subset for debugging...")
+    try:
+        for images, labels in train_ds.take(1):
+            print(f"Single batch shapes - Images: {images.shape}, Labels: {labels.shape}")
+            
+            # Try training on just one batch
+            history = model.fit(images, labels, epochs=1, verbose=1)
+            print("Single batch training successful!")
+            break
+    except Exception as e2:
+        print(f"Single batch training also failed: {e2}")
+        traceback.print_exc()
 
 # Save the weights of the trained model
 
